@@ -1,0 +1,98 @@
+version: 0.2
+
+# ============================================================================
+# CodeBuild BuildSpec for Security Scanning with Checkov
+# ============================================================================
+# Purpose: SAST scanning using Checkov to detect IaC vulnerabilities
+# PCI-DSS: Requirement 6.2 (Security Vulnerability Management)
+# ============================================================================
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - echo "Installing Checkov..."
+      - pip install --upgrade pip
+      - pip install checkov
+      - checkov --version
+
+  pre_build:
+    commands:
+      - echo "Starting security scan at $(date)"
+      - echo "Environment: $ENVIRONMENT"
+      - echo "Checkov enabled: $CHECKOV_ENABLED"
+      - echo "Fail threshold: $CHECKOV_THRESHOLD"
+
+  build:
+    commands:
+      - echo "Running Checkov SAST scan..."
+      - |
+        if [ "$CHECKOV_ENABLED" = "true" ]; then
+          mkdir -p scan-results
+          
+          # Run Checkov scan on Terraform files
+          checkov -d . \
+            --framework terraform \
+            --output cli \
+            --output junitxml \
+            --output-file-path scan-results/ \
+            --soft-fail || CHECKOV_EXIT_CODE=$?
+          
+          # Check exit code
+          if [ "$CHECKOV_EXIT_CODE" != "0" ]; then
+            echo "❌ Checkov found security issues!"
+            echo "Review scan-results/results_junitxml.xml for details"
+            
+            # Fail build based on threshold
+            case "$CHECKOV_THRESHOLD" in
+              CRITICAL)
+                echo "Failing build due to CRITICAL vulnerabilities"
+                exit 1
+                ;;
+              HIGH)
+                echo "Failing build due to HIGH or CRITICAL vulnerabilities"
+                exit 1
+                ;;
+              MEDIUM)
+                echo "Failing build due to MEDIUM, HIGH, or CRITICAL vulnerabilities"
+                exit 1
+                ;;
+              LOW)
+                echo "Failing build due to any vulnerabilities"
+                exit 1
+                ;;
+            esac
+          else
+            echo "✅ Checkov scan passed - no security issues found!"
+          fi
+        else
+          echo "⚠️  Checkov scanning is disabled"
+        fi
+
+  post_build:
+    commands:
+      - echo "Security scan completed at $(date)"
+      - |
+        if [ -f scan-results/results_junitxml.xml ]; then
+          echo "Scan results saved to artifacts"
+        fi
+
+artifacts:
+  files:
+    - '**/*'
+  secondary-artifacts:
+    scan_results:
+      files:
+        - 'scan-results/**/*'
+      name: SecurityScanResults
+
+reports:
+  checkov_report:
+    files:
+      - 'scan-results/results_junitxml.xml'
+    file-format: 'JUNITXML'
+
+cache:
+  paths:
+    - '/root/.cache/pip/**/*'
