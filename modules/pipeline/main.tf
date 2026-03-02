@@ -202,11 +202,14 @@ resource "aws_codebuild_project" "security_scan" {
     buildspec = file("${path.module}/buildspec.yml")
   }
 
-  vpc_config {
-    vpc_id             = var.vpc_id
-    subnets            = var.subnet_ids
-    security_group_ids = [var.security_group_id]
-  }
+  # ✅ COMMENTED OUT: VPC config causing S3 download timeout
+  # For dev environment, CodeBuild doesn't need VPC access
+  # Uncomment and add NAT Gateway or S3 VPC Endpoint for production
+  # vpc_config {
+  #   vpc_id             = var.vpc_id
+  #   subnets            = var.subnet_ids
+  #   security_group_ids = [var.security_group_id]
+  # }
 
   tags = merge(
     var.tags,
