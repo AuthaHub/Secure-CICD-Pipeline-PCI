@@ -27,9 +27,9 @@ variable "availability_zones" {
   type        = list(string)
 }
 
-# ✅ NEW: KMS key for encrypting VPC flow logs
-variable "kms_key_id" {
-  description = "KMS key ID for encrypting CloudWatch logs"
+# ✅ FIXED: Changed from kms_key_id to kms_key_arn
+variable "kms_key_arn" {
+  description = "KMS key ARN for encrypting CloudWatch logs"
   type        = string
 }
 

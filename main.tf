@@ -62,8 +62,8 @@ module "networking" {
   private_subnet_cidrs = var.private_subnet_cidrs
   availability_zones   = var.availability_zones
   
-  # ✅ NEW: Pass KMS key for VPC flow logs encryption
-  kms_key_id = module.security.kms_key_id
+  # ✅ FIXED: Pass kms_key_arn instead of kms_key_id
+  kms_key_arn = module.security.kms_key_arn
   
   tags = local.common_tags
 }

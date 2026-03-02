@@ -30,7 +30,7 @@ resource "aws_vpc" "main" {
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/${var.project_name}-${var.environment}-flow-logs"
   retention_in_days = 365
-  kms_key_id        = var.kms_key_id  # ✅ NEW: Add KMS encryption
+  kms_key_id        = var.kms_key_arn  # ✅ FIXED: Use kms_key_arn
 
   tags = merge(
     var.tags,
