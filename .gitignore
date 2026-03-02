@@ -1,0 +1,145 @@
+# ============================================================================
+# .gitignore for Secure CI/CD Pipeline Project
+# ============================================================================
+# Purpose: Prevents sensitive data and unnecessary files from being committed
+# ============================================================================
+
+# ============================================================================
+# Terraform Files
+# ============================================================================
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files (contain sensitive infrastructure state)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files (contain sensitive variables)
+*.tfvars
+*.tfvars.json
+
+# Override files (used for local development)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI configuration files
+.terraformrc
+terraform.rc
+
+# Terraform plan output files
+*.tfplan
+
+# ============================================================================
+# AWS Credentials & Secrets
+# ============================================================================
+# AWS credentials should NEVER be committed
+.aws/
+*.pem
+*.key
+secrets.yml
+secrets.json
+
+# ============================================================================
+# IDE & Editor Files
+# ============================================================================
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, PyCharm, etc.)
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================================================
+# Operating System Files
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================================================
+# Documentation (local tracking only)
+# ============================================================================
+resume-bullet.md
+docs/progress-todo.md
+docs/build-log.md
+
+# ============================================================================
+# Logs & Temporary Files
+# ============================================================================
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ============================================================================
+# Build Artifacts
+# ============================================================================
+dist/
+build/
+*.zip
+*.tar.gz
+
+# ============================================================================
+# Python (if using Python scripts)
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# ============================================================================
+# Node.js (if using Node-based tools)
+# ============================================================================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ============================================================================
+# Security Scan Results (local only)
+# ============================================================================
+scan-results/
+checkov-report.json
+security-scan-*.xml
