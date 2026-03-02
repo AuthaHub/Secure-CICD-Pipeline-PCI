@@ -9,6 +9,8 @@
 # S3 Bucket for Pipeline Artifacts
 # ============================================================================
 
+# checkov:skip=CKV2_AWS_62:Event notifications not required for dev pipeline artifacts
+# checkov:skip=CKV_AWS_144:Cross-region replication is cost-prohibitive for dev environment
 resource "aws_s3_bucket" "artifacts" {
   bucket_prefix = "${var.project_name}-${var.environment}-artifacts-"
 
@@ -81,6 +83,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "artifacts" {
 # S3 Bucket for Access Logs
 # ============================================================================
 
+# checkov:skip=CKV2_AWS_62:Event notifications not required for dev access logs
+# checkov:skip=CKV_AWS_144:Cross-region replication is cost-prohibitive for dev environment
 resource "aws_s3_bucket" "access_logs" {
   bucket_prefix = "${var.project_name}-${var.environment}-access-logs-"
 

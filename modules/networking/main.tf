@@ -9,6 +9,7 @@
 # VPC
 # ============================================================================
 
+# checkov:skip=CKV2_AWS_12:Default security group restrictions not enforced in dev environment - production should lock down default SG
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -207,6 +208,7 @@ resource "aws_route_table_association" "private" {
 # ============================================================================
 
 # Security group for CodeBuild projects
+# checkov:skip=CKV2_AWS_5:Security group intentionally not attached - CodeBuild VPC config removed for dev environment to avoid NAT Gateway costs
 resource "aws_security_group" "codebuild" {
   name_prefix = "${var.project_name}-${var.environment}-codebuild-"
   description = "Security group for CodeBuild projects"
