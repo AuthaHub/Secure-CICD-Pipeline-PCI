@@ -20,9 +20,9 @@ phases:
   pre_build:
     commands:
       - echo "Starting security scan at $(date)"
-      - echo "Environment: $ENVIRONMENT"
-      - echo "Checkov enabled: $CHECKOV_ENABLED"
-      - echo "Fail threshold: $CHECKOV_THRESHOLD"
+      - echo "Environment - $ENVIRONMENT"
+      - echo "Checkov enabled - $CHECKOV_ENABLED"
+      - echo "Fail threshold - $CHECKOV_THRESHOLD"
 
   build:
     commands:
@@ -31,7 +31,6 @@ phases:
         if [ "$CHECKOV_ENABLED" = "true" ]; then
           mkdir -p scan-results
           
-          # Run Checkov scan on Terraform files
           checkov -d . \
             --framework terraform \
             --output cli \
@@ -39,12 +38,10 @@ phases:
             --output-file-path scan-results/ \
             --soft-fail || CHECKOV_EXIT_CODE=$?
           
-          # Check exit code
           if [ "$CHECKOV_EXIT_CODE" != "0" ]; then
-            echo "❌ Checkov found security issues!"
+            echo "Checkov found security issues"
             echo "Review scan-results/results_junitxml.xml for details"
             
-            # Fail build based on threshold
             case "$CHECKOV_THRESHOLD" in
               CRITICAL)
                 echo "Failing build due to CRITICAL vulnerabilities"
@@ -55,7 +52,7 @@ phases:
                 exit 1
                 ;;
               MEDIUM)
-                echo "Failing build due to MEDIUM, HIGH, or CRITICAL vulnerabilities"
+                echo "Failing build due to MEDIUM HIGH or CRITICAL vulnerabilities"
                 exit 1
                 ;;
               LOW)
@@ -64,10 +61,10 @@ phases:
                 ;;
             esac
           else
-            echo "✅ Checkov scan passed - no security issues found!"
+            echo "Checkov scan passed - no security issues found"
           fi
         else
-          echo "⚠️  Checkov scanning is disabled"
+          echo "Checkov scanning is disabled"
         fi
 
   post_build:
