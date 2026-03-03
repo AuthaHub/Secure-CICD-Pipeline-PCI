@@ -34,10 +34,10 @@
 - **Industry standard:** Widely adopted in DevOps roles (career relevance)
 
 **Trade-offs:**
-- ✅ **Pro:** Declarative syntax, plan/apply workflow prevents accidental changes
-- ❌ **Con:** Requires external state management (S3 backend) for team collaboration
-- ✅ **Pro:** Dry-run capability (`terraform plan`) before making changes
-- ❌ **Con:** Learning curve for HCL syntax and provider-specific resources
+- **Pro:** Declarative syntax, plan/apply workflow prevents accidental changes
+- **Con:** Requires external state management (S3 backend) for team collaboration
+- **Pro:** Dry-run capability (`terraform plan`) before making changes
+- **Con:** Learning curve for HCL syntax and provider-specific resources
 
 ---
 
@@ -53,10 +53,10 @@
 - **PCI-DSS alignment:** AWS services have compliance certifications
 
 **Trade-offs:**
-- ✅ **Pro:** No maintenance burden, automatic scaling, built-in logging
-- ❌ **Con:** Vendor lock-in to AWS ecosystem
-- ✅ **Pro:** Integrated security (KMS, IAM, VPC)
-- ❌ **Con:** Less flexible than Jenkins for complex workflows
+- **Pro:** No maintenance burden, automatic scaling, built-in logging
+- **Con:** Vendor lock-in to AWS ecosystem
+- **Pro:** Integrated security (KMS, IAM, VPC)
+- **Con:** Less flexible than Jenkins for complex workflows
 
 **Alternatives Considered:**
 | Tool | Why Not Chosen |
@@ -86,10 +86,10 @@ checkov -d . --soft-fail --output junitxml > checkov-report.xml
 ```
 
 **Trade-offs:**
-- ✅ **Pro:** Catches 90+ security issues automatically
-- ❌ **Con:** Some checks require business justification to suppress (e.g., cross-region replication)
-- ✅ **Pro:** Fast execution (~30 seconds for this project)
-- ❌ **Con:** False positives require manual review and suppression comments
+- **Pro:** Catches 90+ security issues automatically
+- **Con:** Some checks require business justification to suppress (e.g., cross-region replication)
+- **Pro:** Fast execution (~30 seconds for this project)
+- **Con:** False positives require manual review and suppression comments
 
 ---
 
@@ -120,10 +120,10 @@ modules/
 - Pipeline module creates S3 buckets → referenced by security module for IAM policies
 
 **Trade-offs:**
-- ✅ **Pro:** Clear boundaries, easier to understand and modify
-- ❌ **Con:** Module dependencies require careful ordering (security → networking → pipeline)
-- ✅ **Pro:** Can version modules independently in future
-- ❌ **Con:** Initial setup more complex than monolithic configuration
+- **Pro:** Clear boundaries, easier to understand and modify
+- **Con:** Module dependencies require careful ordering (security → networking → pipeline)
+- **Pro:** Can version modules independently in future
+- **Con:** Initial setup more complex than monolithic configuration
 
 ---
 
@@ -170,10 +170,10 @@ variable "environment" {
 - Automatic key rotation enabled (365-day cycle)
 
 **Trade-offs:**
-- ✅ **Pro:** Enhanced security posture, compliance alignment
-- ❌ **Con:** $1/month cost vs free AWS-managed keys
-- ✅ **Pro:** Granular access control via IAM policies
-- ❌ **Con:** More complex to manage (key policies + IAM policies)
+- **Pro:** Enhanced security posture, compliance alignment
+- **Con:** $1/month cost vs free AWS-managed keys
+- **Pro:** Granular access control via IAM policies
+- **Con:** More complex to manage (key policies + IAM policies)
 
 ---
 
