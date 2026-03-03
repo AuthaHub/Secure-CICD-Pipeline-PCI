@@ -1,119 +1,23 @@
 # ============================================================================
-# Security Module - KMS Keys, IAM Roles, Policies
+# Security Module - KMS Keys and IAM Roles
 # ============================================================================
-# Purpose: Encryption, authentication, and authorization for pipeline
-# PCI-DSS: Requirements 3.4 (Encryption), 7.1 (Least Privilege)
+# Purpose: Centralized security controls for encryption and access management
+# PCI-DSS: Requirements 3.4 (Encryption), 7.1 (Access Control)
 # ============================================================================
 
 # ============================================================================
-# KMS Key for Encryption with Explicit Key Policy
+# KMS Key for Pipeline Encryption
 # ============================================================================
 
 resource "aws_kms_key" "pipeline" {
-  description             = "KMS key for ${var.project_name}-${var.environment} pipeline encryption"
-  deletion_window_in_days = var.kms_deletion_window
-  enable_key_rotation     = var.enable_kms_rotation
-
-  # ✅ FIXED: Added explicit KMS key policy for compliance
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "Enable IAM User Permissions"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${var.aws_account_id}:root"
-        }
-        Action   = "kms:*"
-        Resource = "*"
-      },
-      {
-        Sid    = "Allow CodePipeline to use the key"
-        Effect = "Allow"
-        Principal = {
-          Service = "codepipeline.amazonaws.com"
-        }
-        Action = [
-          "kms:Decrypt",
-          "kms:Encrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ]
-        Resource = "*"
-        Condition = {
-          StringEquals = {
-            "kms:ViaService" = "s3.${var.aws_region}.amazonaws.com"
-          }
-        }
-      },
-      {
-        Sid    = "Allow CodeBuild to use the key"
-        Effect = "Allow"
-        Principal = {
-          Service = "codebuild.amazonaws.com"
-        }
-        Action = [
-          "kms:Decrypt",
-          "kms:Encrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ]
-        Resource = "*"
-      },
-      {
-        Sid    = "Allow CloudWatch Logs to use the key"
-        Effect = "Allow"
-        Principal = {
-          Service = "logs.${var.aws_region}.amazonaws.com"
-        }
-        Action = [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:CreateGrant",
-          "kms:DescribeKey"
-        ]
-        Resource = "*"
-        Condition = {
-          ArnLike = {
-            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:*"
-          }
-        }
-      },
-      {
-        Sid    = "Allow S3 to use the key"
-        Effect = "Allow"
-        Principal = {
-          Service = "s3.amazonaws.com"
-        }
-        Action = [
-          "kms:Decrypt",
-          "kms:GenerateDataKey"
-        ]
-        Resource = "*"
-      },
-      {
-        Sid    = "Allow SNS to use the key"
-        Effect = "Allow"
-        Principal = {
-          Service = "sns.amazonaws.com"
-        }
-        Action = [
-          "kms:Decrypt",
-          "kms:GenerateDataKey"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+  description             = "KMS key for ${var.project_name} ${var.environment} pipeline encryption"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
 
   tags = merge(
     var.tags,
     {
-      Name = "${var.project_name}-${var.environment}-kms-key"
+      Name = "${var.project_name}-${var.environment}-pipeline-key"
     }
   )
 }
@@ -124,7 +28,7 @@ resource "aws_kms_alias" "pipeline" {
 }
 
 # ============================================================================
-# IAM Role for CodePipeline
+# CodePipeline IAM Role
 # ============================================================================
 
 resource "aws_iam_role" "codepipeline" {
@@ -203,7 +107,7 @@ resource "aws_iam_role_policy" "codepipeline" {
 }
 
 # ============================================================================
-# IAM Role for CodeBuild
+# CodeBuild IAM Role
 # ============================================================================
 
 resource "aws_iam_role" "codebuild" {
@@ -289,9 +193,15 @@ resource "aws_iam_role_policy" "codebuild" {
       {
         Effect = "Allow"
         Action = [
-          "secretsmanager:GetSecretValue"
+          "codebuild:CreateReportGroup",
+          "codebuild:CreateReport",
+          "codebuild:UpdateReport",
+          "codebuild:BatchPutTestCases",
+          "codebuild:BatchPutCodeCoverages"
         ]
-        Resource = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.project_name}/*"
+        Resource = [
+          "arn:aws:codebuild:${var.aws_region}:${var.aws_account_id}:report-group/${var.project_name}-${var.environment}-*"
+        ]
       }
     ]
   })
@@ -302,3 +212,4 @@ resource "aws_iam_role_policy" "codebuild" {
 # ============================================================================
 
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
