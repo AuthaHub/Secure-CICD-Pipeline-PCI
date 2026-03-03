@@ -143,3 +143,14 @@ yarn-error.log
 scan-results/
 checkov-report.json
 security-scan-*.xml
+
+# Personal career materials (local only)
+resume-highlights.md
+resume-bullets.md
+cover-letter*.md
+interview-prep*.md
+job-applications*.md
+personal-notes*.md
+career*.md
+*.resume.*
+*.personal.*
