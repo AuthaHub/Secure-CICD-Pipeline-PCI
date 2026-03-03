@@ -145,7 +145,7 @@ checkov-report.json
 security-scan-*.xml
 
 # Personal career materials (local only)
-resume-highlights.md
+resume_highlights.md
 resume-bullets.md
 cover-letter*.md
 interview-prep*.md
