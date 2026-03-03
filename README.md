@@ -2,7 +2,7 @@
 
 ## Project Status: COMPLETE & OPERATIONAL
 
-**Latest Pipeline Run:** ✅ All stages passed  
+**Latest Pipeline Run:** All stages passed  
 **Security Scan:** 90 checks passed, 0 failed, 6 skipped (with documented justifications)  
 **Deployment:** Fully automated with manual approval gate  
 
@@ -158,7 +158,7 @@ terraform apply tfplan
 ## Connect
 
 **Portfolio by AuthaHub**  
-[LinkedIn](#) | [Portfolio](#) | [Email](#)
+www.linkedin.com/in/darnellivy | github.com/authahub 
 
 ---
 
