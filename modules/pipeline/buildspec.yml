@@ -31,6 +31,9 @@ phases:
         if [ "$CHECKOV_ENABLED" = "true" ]; then
           mkdir -p scan-results
           
+          # Initialize exit code to 0
+          CHECKOV_EXIT_CODE=0
+          
           checkov -d . \
             --framework terraform \
             --output cli \
@@ -38,7 +41,9 @@ phases:
             --output-file-path scan-results/ \
             --soft-fail || CHECKOV_EXIT_CODE=$?
           
-          if [ "$CHECKOV_EXIT_CODE" != "0" ]; then
+          echo "Checkov exit code: $CHECKOV_EXIT_CODE"
+          
+          if [ "$CHECKOV_EXIT_CODE" -ne 0 ]; then
             echo "Checkov found security issues"
             echo "Review scan-results/results_junitxml.xml for details"
             
