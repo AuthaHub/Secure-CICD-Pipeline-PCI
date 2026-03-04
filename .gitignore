@@ -154,3 +154,9 @@ personal-notes*.md
 career*.md
 *.resume.*
 *.personal.*
+
+# Personal documentation and guides (local only)
+SCREENSHOT_GUIDE.md
+docs/SCREENSHOT_GUIDE.md
+docs/screenshot*.md
+docs/*_GUIDE.md
